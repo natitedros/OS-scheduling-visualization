@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>OS Scheduler Visualization</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Scheduling Algorithms</h1>
+    <div>
+      <label for="algorithm">Select an algorithm:</label>
+      <select id="algorithm" name="algorithm">
+        <option value="fcfs">First come First Serve</option>
+        <option value="sjf">Shortest Job First</option>
+        <option value="srtf">Shortest Job First Preemptive</option>
+        <option value="pq">Priority Queue</option>
+        <option value="rr">Round Robin</option>
+      </select>
+    </div>
+
+    <button id="addRowBtn">Add New Process</button>
+    <button id="deleteRowBtn">Delete Last Process</button>
+
+    <div>
+      <table id="processTable">
+        <thead>
+          <tr>
+            <th>Process ID</th>
+            <th>Arrival Time</th>
+            <th>Burst Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td class="editable">0</td>
+            <td class="editable">6</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td class="editable">1</td>
+            <td class="editable">3</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td class="editable">2</td>
+            <td class="editable">8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button id="calculateBtn">Calculate</button>
+
+    <div id="output"></div>
+
+    <script type="module" src="./dist/index.js"></script>
+  </body>
+</html>

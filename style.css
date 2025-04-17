@@ -1,0 +1,201 @@
+/* Modern CSS for OS Scheduler Visualization */
+:root {
+  --primary-color: #3498db;
+  --primary-dark: #2980b9;
+  --secondary-color: #e74c3c;
+  --secondary-dark: #c0392b;
+  --background-color: #f8f9fa;
+  --text-color: #2c3e50;
+  --border-color: #dfe6e9;
+  --hover-color: #f1f5f9;
+  --success-color: #2ecc71;
+  --shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--primary-dark);
+  font-weight: 600;
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+}
+
+/* Controls Section */
+div {
+  margin-bottom: 1.5rem;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+select {
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: white;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 300px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+/* Buttons */
+button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-right: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+#addRowBtn {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+#addRowBtn:hover {
+  background-color: var(--primary-dark);
+}
+
+#deleteRowBtn {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+#deleteRowBtn:hover {
+  background-color: var(--secondary-dark);
+}
+
+#calculateBtn {
+  background-color: var(--success-color);
+  color: white;
+  font-size: 1rem;
+  padding: 0.7rem 1.5rem;
+  margin-top: 1rem;
+}
+
+#calculateBtn:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  box-shadow: var(--shadow);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+thead {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+th,
+td {
+  padding: 0.8rem 1rem;
+  text-align: center;
+}
+
+th {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+tbody tr {
+  background-color: white;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s;
+}
+
+tbody tr:last-child {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background-color: var(--hover-color);
+}
+
+.editable {
+  cursor: pointer;
+  position: relative;
+}
+
+.editable:hover::after {
+  content: "✏️";
+  font-size: 0.8rem;
+  position: absolute;
+  margin-left: 5px;
+  opacity: 0.5;
+}
+
+/* Output Section */
+#output {
+  background-color: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  box-shadow: var(--shadow);
+  min-height: 100px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
+
+  button {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  select {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Optional Animation for button clicks */
+button:active {
+  transform: scale(0.98);
+}

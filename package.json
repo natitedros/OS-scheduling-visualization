@@ -1,0 +1,24 @@
+{
+  "name": "os-scheduling-visualization",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/natitedros/OS-scheduling-visualization.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/natitedros/OS-scheduling-visualization/issues"
+  },
+  "homepage": "https://github.com/natitedros/OS-scheduling-visualization#readme",
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
