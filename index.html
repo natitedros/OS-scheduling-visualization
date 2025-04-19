@@ -10,7 +10,7 @@
     <div>
       <label for="algorithm">Select an algorithm:</label>
       <select id="algorithm" name="algorithm">
-        <option value="fcfs">First come First Serve</option>
+        <option value="fcfs">First Come First Serve</option>
         <option value="sjf">Shortest Job First</option>
         <option value="srtf">Shortest Job First Preemptive</option>
         <option value="pq">Priority Queue</option>
@@ -25,9 +25,10 @@
       <table id="processTable">
         <thead>
           <tr>
-            <th>Process ID</th>
+            <th>Process</th>
             <th>Arrival Time</th>
             <th>Burst Time</th>
+            <th class="priority">Priority</th>
           </tr>
         </thead>
         <tbody>
@@ -35,16 +36,19 @@
             <td>1</td>
             <td class="editable">0</td>
             <td class="editable">6</td>
+            <td class="editable priority">6</td>
           </tr>
           <tr>
             <td>2</td>
             <td class="editable">1</td>
             <td class="editable">3</td>
+            <td class="editable priority">6</td>
           </tr>
           <tr>
             <td>3</td>
             <td class="editable">2</td>
             <td class="editable">8</td>
+            <td class="editable priority">6</td>
           </tr>
         </tbody>
       </table>

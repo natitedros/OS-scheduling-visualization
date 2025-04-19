@@ -164,6 +164,10 @@ tbody tr:hover {
   opacity: 0.5;
 }
 
+.priority {
+  display: none;
+}
+
 /* Output Section */
 #output {
   background-color: white;

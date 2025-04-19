@@ -2,6 +2,7 @@ import { Process } from "./models/Process.js";
 import { FCFSScheduler } from "./models/FCFSScheduler.js";
 import { SJFScheduler } from "./models/SJFScheduler.js";
 import { SRTFScheduler } from "./models/SRTFScheduler.js";
+import { PQScheduler } from "./models/PQScheduler.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   const table = document.getElementById("processTable");
@@ -39,6 +40,21 @@ document.addEventListener("DOMContentLoaded", function () {
     makeEditable(cell);
   });
 
+  // Add and hide priority column
+  const dropdown = document.getElementById("algorithm") as HTMLSelectElement;
+  dropdown.addEventListener("change", () => {
+    const cells = document.querySelectorAll<HTMLElement>(".priority");
+    if (dropdown.value === "pq") {
+      cells.forEach((cell) => {
+        cell.style.display = "block";
+      });
+    } else {
+      cells.forEach((cell) => {
+        cell.style.display = "none";
+      });
+    }
+  });
+
   // Add new row functionality
   const addRowBtn = document.getElementById("addRowBtn");
   addRowBtn!.addEventListener("click", function () {
@@ -48,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Create cells
     const idCell = document.createElement("td");
     idCell.textContent = "" + rowCount;
-    idCell.className = "editable";
 
     const arrivalCell = document.createElement("td");
     arrivalCell.textContent = "0";
@@ -58,10 +73,19 @@ document.addEventListener("DOMContentLoaded", function () {
     burstCell.textContent = "0";
     burstCell.className = "editable";
 
+    const priorityCell = document.createElement("td");
+    priorityCell.textContent = "1";
+    priorityCell.className = "editable priority";
+    priorityCell.style.display =
+      (document.getElementById("algorithm") as HTMLSelectElement).value === "pq"
+        ? "block"
+        : "none";
+
     // Add cells to row
     newRow.appendChild(idCell);
     newRow.appendChild(arrivalCell);
     newRow.appendChild(burstCell);
+    newRow.appendChild(priorityCell);
 
     // Add row to table
     tbody!.appendChild(newRow);
@@ -69,6 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Make new cells editable
     makeEditable(arrivalCell);
     makeEditable(burstCell);
+    makeEditable(priorityCell);
   });
 
   // Delete last entered process
@@ -87,6 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
     ProcessId,
     ArrivalTime,
     BurstTime,
+    Priority,
   }
 
   calculateBtn!.addEventListener("click", function () {
@@ -101,7 +127,8 @@ document.addEventListener("DOMContentLoaded", function () {
         return new Process(
           row[Index.ProcessId],
           row[Index.ArrivalTime],
-          row[Index.BurstTime]
+          row[Index.BurstTime],
+          row[Index.Priority]
         );
       });
 
@@ -119,8 +146,10 @@ function executeOutput(processes: Process[], algoType: string) {
     scheduler = new FCFSScheduler(processes);
   } else if (algoType === "sjf") {
     scheduler = new SJFScheduler(processes);
-  } else {
+  } else if (algoType === "srtf") {
     scheduler = new SRTFScheduler(processes);
+  } else {
+    scheduler = new PQScheduler(processes);
   }
   const result = scheduler.run();
 
