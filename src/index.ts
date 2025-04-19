@@ -3,6 +3,7 @@ import { FCFSScheduler } from "./models/FCFSScheduler.js";
 import { SJFScheduler } from "./models/SJFScheduler.js";
 import { SRTFScheduler } from "./models/SRTFScheduler.js";
 import { PQScheduler } from "./models/PQScheduler.js";
+import { RRScheduler } from "./models/RRScheduler.js";
 
 document.addEventListener("DOMContentLoaded", function () {
   const table = document.getElementById("processTable");
@@ -40,15 +41,23 @@ document.addEventListener("DOMContentLoaded", function () {
     makeEditable(cell);
   });
 
-  // Add and hide priority column
+  // Make Display edits during Round Robin and Priority Queue
   const dropdown = document.getElementById("algorithm") as HTMLSelectElement;
   dropdown.addEventListener("change", () => {
     const cells = document.querySelectorAll<HTMLElement>(".priority");
+    const quantumDiv = document.getElementById("timeQdiv");
     if (dropdown.value === "pq") {
+      quantumDiv!.style.display = "none";
       cells.forEach((cell) => {
         cell.style.display = "block";
       });
+    } else if (dropdown.value === "rr") {
+      quantumDiv!.style.display = "block";
+      cells.forEach((cell) => {
+        cell.style.display = "none";
+      });
     } else {
+      quantumDiv!.style.display = "none";
       cells.forEach((cell) => {
         cell.style.display = "none";
       });
@@ -148,8 +157,15 @@ function executeOutput(processes: Process[], algoType: string) {
     scheduler = new SJFScheduler(processes);
   } else if (algoType === "srtf") {
     scheduler = new SRTFScheduler(processes);
-  } else {
+  } else if (algoType === "pq") {
     scheduler = new PQScheduler(processes);
+  } else {
+    scheduler = new RRScheduler(
+      processes,
+      Number(
+        (document.getElementById("timeQuantum")! as HTMLInputElement).value
+      )
+    );
   }
   const result = scheduler.run();
 

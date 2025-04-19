@@ -168,6 +168,10 @@ tbody tr:hover {
   display: none;
 }
 
+#timeQdiv {
+  display: none;
+}
+
 /* Output Section */
 #output {
   background-color: white;
