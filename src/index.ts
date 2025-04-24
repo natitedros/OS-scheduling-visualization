@@ -170,11 +170,82 @@ function executeOutput(processes: Process[], algoType: string) {
   const result = scheduler.run();
 
   const outputDiv = document.getElementById("output")!;
-  outputDiv.innerHTML = "<h2>Results:</h2>";
+  outputDiv.textContent = "";
+  const pListDiv = document.createElement("div");
+  pListDiv.innerHTML = "<h4>Logs:</h4>";
+  const ganttDiv = document.createElement("div");
+  ganttDiv.innerHTML = "<h4>Gantt Chart:</h4>";
+  const gantt = document.createElement("div");
+  const results = document.getElementById("output-h2");
+
+  results!.style.display = "block";
+  outputDiv!.style.display = "flex";
+  ganttDiv.className = "gantt-container";
+  gantt.id = "gantt-chart";
+  pListDiv.className = "output-list";
+
+  let schedule: ScheduledProcess[] = [];
 
   result.forEach(({ process, start, end }) => {
     const p = document.createElement("p");
     p.textContent = `Process ${process.id} | Start: ${start} | End: ${end}`;
-    outputDiv.appendChild(p);
+    pListDiv.appendChild(p);
+
+    const tempSched = { processId: process.id, startTime: start, endTime: end };
+    schedule.push(tempSched);
   });
+  outputDiv.appendChild(pListDiv);
+  ganttDiv.appendChild(gantt);
+  outputDiv.appendChild(ganttDiv);
+  renderVerticalGanttChart(processes, schedule);
+}
+
+interface ScheduledProcess {
+  processId: number;
+  startTime: number;
+  endTime: number;
+}
+function renderVerticalGanttChart(
+  processes: Process[],
+  schedule: ScheduledProcess[]
+) {
+  const container = document.getElementById("gantt-chart")!;
+  container.innerHTML = "";
+
+  // Get total time range
+  const maxEndTime = Math.max(...schedule.map((s) => s.endTime));
+  const containerWidth = container.clientWidth; // in pixels
+
+  const timeUnitWidth = containerWidth / maxEndTime;
+
+  // Group schedule entries by process ID
+  const scheduleByProcess = new Map<number, ScheduledProcess[]>();
+  for (const entry of schedule) {
+    if (!scheduleByProcess.has(entry.processId)) {
+      scheduleByProcess.set(entry.processId, []);
+    }
+    scheduleByProcess.get(entry.processId)!.push(entry);
+  }
+
+  for (const process of processes) {
+    const row = document.createElement("div");
+    row.className = "gantt-row";
+
+    const entries = scheduleByProcess.get(process.id) || [];
+
+    for (const entry of entries) {
+      const bar = document.createElement("div");
+      const duration = entry.endTime - entry.startTime;
+
+      bar.className = `gantt-bar bar-color-${process.id % 5}`;
+      bar.style.left = `${entry.startTime * timeUnitWidth}px`;
+      bar.style.width = `${duration * timeUnitWidth}px`;
+      bar.style.color = "black";
+      bar.textContent = `P${entry.processId} [${entry.startTime}-${entry.endTime}]`;
+
+      row.appendChild(bar);
+    }
+
+    container.appendChild(row);
+  }
 }

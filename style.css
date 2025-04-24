@@ -180,6 +180,7 @@ tbody tr:hover {
   margin-top: 2rem;
   box-shadow: var(--shadow);
   min-height: 100px;
+  display: none;
 }
 
 /* Responsive Adjustments */
@@ -207,3 +208,96 @@ tbody tr:hover {
 button:active {
   transform: scale(0.98);
 }
+
+#output-h2 {
+  display: none;
+  color: var(--primary-dark);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+#output p {
+  background-color: var(--hover-color);
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 0.8rem;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 500;
+  font-size: small;
+  display: flex;
+  justify-content: start;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s;
+}
+
+#output p:hover {
+  transform: translateX(5px);
+  background-color: #e3f2fd;
+}
+
+/* Process ID highlight */
+#output p::before {
+  content: "🖥️";
+  margin-right: 0.5rem;
+  color: var(--primary-color);
+}
+
+/* Responsive adjustments for results */
+@media (max-width: 768px) {
+  #output p {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  #output p::before {
+    margin-right: 0;
+    margin-bottom: 0.3rem;
+  }
+}
+.output-list {
+  max-width: 30%;
+}
+
+.gantt-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-left: 20px;
+  width: 70%;
+}
+
+.gantt-row {
+  position: relative;
+  height: 40px;
+  background-color: white;
+}
+
+.gantt-bar {
+  position: absolute;
+  height: 100%;
+  color: white;
+  text-align: center;
+  font-size: 14px;
+  line-height: 40px;
+  border-radius: 4px;
+  padding: 0 5px;
+  white-space: nowrap;
+}
+
+.bar-color-0 {
+  background-color: #4caf50;
+}
+.bar-color-1 {
+  background-color: #2196f3;
+}
+.bar-color-2 {
+  background-color: #ff9800;
+}
+.bar-color-3 {
+  background-color: #9c27b0;
+}
+.bar-color-4 {
+  background-color: #f44336;
+}
+/* Add more as needed */
