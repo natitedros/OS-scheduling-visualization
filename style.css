@@ -301,3 +301,78 @@ button:active {
   background-color: #f44336;
 }
 /* Add more as needed */
+.sim-container {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 60px;
+}
+
+.ready-queue {
+  text-align: center;
+  border: 2px dashed #888;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.cpu {
+  text-align: center;
+}
+
+.process {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.process img {
+  width: 80px;
+  height: 80px;
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 20px;
+}
+
+.time {
+  font-size: 1.5rem;
+}
+
+.count {
+  background-color: gold;
+  padding: 4px 8px;
+  font-weight: bold;
+}
+
+.stop-button {
+  padding: 8px 16px;
+  border: 2px solid red;
+  background-color: transparent;
+  color: red;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.arrow {
+  width: 15%;
+  margin-right: -15%;
+}
+
+.queue-to-cpu {
+  transform: scaleY(-1);
+}

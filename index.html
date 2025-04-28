@@ -36,19 +36,19 @@
             <td>1</td>
             <td class="editable">0</td>
             <td class="editable">6</td>
-            <td class="editable priority">6</td>
+            <td class="editable priority">1</td>
           </tr>
           <tr>
             <td>2</td>
             <td class="editable">1</td>
             <td class="editable">4</td>
-            <td class="editable priority">6</td>
+            <td class="editable priority">2</td>
           </tr>
           <tr>
             <td>3</td>
             <td class="editable">2</td>
             <td class="editable">3</td>
-            <td class="editable priority">6</td>
+            <td class="editable priority">1</td>
           </tr>
         </tbody>
       </table>
@@ -60,6 +60,41 @@
     <button id="calculateBtn">Calculate</button>
     <h2 id="output-h2">Results:</h2>
     <div id="output"></div>
+    <br /><br />
+    <button id="startBtn">Start Simulation</button>
+    <div class="sim-container">
+      <img class="arrow" src="curve-arrow.png" alt="" />
+      <div class="left-panel">
+        <div class="ready-queue">
+          <h2>Ready Queue</h2>
+          <div class="process">
+            <span>P4</span>
+            <span>P2</span>
+            <span>P3</span>
+            <span>P4</span>
+            <span>P2</span>
+            <span>P3</span>
+            <span>P4</span>
+            <span>P2</span>
+            <span>P3</span>
+          </div>
+        </div>
+
+        <div class="cpu">
+          <h2>CPU</h2>
+          <div class="process">
+            <img src="cpu.png" alt="CPU Icon" />
+            <span>P1</span>
+          </div>
+        </div>
+      </div>
+      <div class="right-panel">
+        <div class="time">
+          <strong>Time:</strong> <span class="count">0</span>
+        </div>
+        <button class="stop-button">STOP!</button>
+      </div>
+    </div>
 
     <script type="module" src="./dist/index.js"></script>
   </body>

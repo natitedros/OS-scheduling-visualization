@@ -249,3 +249,115 @@ function renderVerticalGanttChart(
     container.appendChild(row);
   }
 }
+
+interface simulationState {
+  time: number;
+  cpu: string;
+  readyQueue: string[];
+  queueToCpu: boolean;
+  cpuToQueue: boolean;
+}
+// Example simulation states
+const simulationStates: simulationState[] = [
+  {
+    time: 0,
+    cpu: "P1",
+    readyQueue: ["P2", "P3", "P4"],
+    queueToCpu: false,
+    cpuToQueue: false,
+  },
+  {
+    time: 1,
+    cpu: "P2",
+    readyQueue: ["P3", "P4"],
+    queueToCpu: true,
+    cpuToQueue: false,
+  },
+  {
+    time: 2,
+    cpu: "P3",
+    readyQueue: ["P4"],
+    queueToCpu: true,
+    cpuToQueue: false,
+  },
+  { time: 3, cpu: "", readyQueue: ["P4"], queueToCpu: false, cpuToQueue: true },
+  { time: 4, cpu: "P4", readyQueue: [], queueToCpu: true, cpuToQueue: false },
+  // You can extend this list
+];
+
+let intervalId: number | undefined;
+let currentStep = 0;
+
+const startBtn = document.getElementById("startBtn") as HTMLButtonElement;
+const stopBtn = document.querySelector(".stop-button") as HTMLButtonElement;
+const timeCounter = document.querySelector(".count") as HTMLElement;
+const arrow = document.querySelector(".arrow") as HTMLImageElement;
+const readyQueueContainer = document.querySelector(
+  ".ready-queue .process"
+) as HTMLElement;
+const cpuContainer = document.querySelector(".cpu .process") as HTMLElement;
+
+function updateUI(state: simulationState) {
+  // Update Time
+  timeCounter.textContent = state.time.toString();
+
+  // Update Ready Queue
+  readyQueueContainer.innerHTML = "";
+  state.readyQueue.forEach((proc) => {
+    const span = document.createElement("span");
+    span.textContent = proc;
+    readyQueueContainer.appendChild(span);
+  });
+
+  // Update CPU
+  const cpuImg = cpuContainer.querySelector("img");
+  cpuContainer.innerHTML = ""; // Clear everything
+  if (cpuImg) {
+    cpuContainer.appendChild(cpuImg); // Re-append the CPU image
+  }
+  const cpuSpan = document.createElement("span");
+  cpuSpan.textContent = state.cpu || ""; // Show the current process in CPU
+  cpuContainer.appendChild(cpuSpan);
+
+  if (state.queueToCpu) {
+    arrow.style.opacity = "100%";
+    arrow.classList.add("queue-to-cpu");
+  }
+
+  if (state.cpuToQueue) {
+    arrow.style.opacity = "100%";
+    arrow.classList.remove("queue-to-cpu");
+  }
+
+  if (!state.cpuToQueue && !state.queueToCpu) {
+    arrow.style.opacity = "0%";
+  }
+  // (Optional) You can add animation/effects based on queueToCpu or cpuToQueue if you want
+}
+
+function startSimulation() {
+  if (intervalId !== undefined) return; // Prevent multiple intervals
+
+  currentStep = 0;
+  updateUI(simulationStates[currentStep]);
+
+  intervalId = window.setInterval(() => {
+    currentStep++;
+    if (currentStep >= simulationStates.length) {
+      stopSimulation(); // Stop if finished
+      return;
+    }
+    updateUI(simulationStates[currentStep]);
+  }, 1000); // Every second
+}
+
+function stopSimulation() {
+  if (intervalId !== undefined) {
+    clearInterval(intervalId);
+    intervalId = undefined;
+  }
+}
+
+// Event Listeners
+startBtn.addEventListener("click", startSimulation);
+stopBtn.addEventListener("click", stopSimulation);
