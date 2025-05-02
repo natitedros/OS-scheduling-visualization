@@ -376,3 +376,7 @@ button:active {
 .queue-to-cpu {
   transform: scaleY(-1);
 }
+
+.sim-container {
+  display: none;
+}

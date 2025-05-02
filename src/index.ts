@@ -5,6 +5,12 @@ import { SRTFScheduler } from "./models/SRTFScheduler.js";
 import { PQScheduler } from "./models/PQScheduler.js";
 import { RRScheduler } from "./models/RRScheduler.js";
 
+type ExecutionSegment = {
+  start: number;
+  end: number;
+  process: Process;
+};
+let simStates: simulationState[];
 document.addEventListener("DOMContentLoaded", function () {
   const table = document.getElementById("processTable");
   const tbody = table!.querySelector("tbody");
@@ -167,7 +173,10 @@ function executeOutput(processes: Process[], algoType: string) {
       )
     );
   }
-  const result = scheduler.run();
+  const result: ExecutionSegment[] = scheduler.run();
+
+  simStates = generateSimulationStates(result);
+  console.log(simStates);
 
   const outputDiv = document.getElementById("output")!;
   outputDiv.textContent = "";
@@ -257,38 +266,38 @@ interface simulationState {
   queueToCpu: boolean;
   cpuToQueue: boolean;
 }
-// Example simulation states
-const simulationStates: simulationState[] = [
-  {
-    time: 0,
-    cpu: "P1",
-    readyQueue: ["P2", "P3", "P4"],
-    queueToCpu: false,
-    cpuToQueue: false,
-  },
-  {
-    time: 1,
-    cpu: "P2",
-    readyQueue: ["P3", "P4"],
-    queueToCpu: true,
-    cpuToQueue: false,
-  },
-  {
-    time: 2,
-    cpu: "P3",
-    readyQueue: ["P4"],
-    queueToCpu: true,
-    cpuToQueue: false,
-  },
-  { time: 3, cpu: "", readyQueue: ["P4"], queueToCpu: false, cpuToQueue: true },
-  { time: 4, cpu: "P4", readyQueue: [], queueToCpu: true, cpuToQueue: false },
-  // You can extend this list
-];
+// // Example simulation states
+// const simulationStates: simulationState[] = [
+//   {
+//     time: 0,
+//     cpu: "P1",
+//     readyQueue: ["P2", "P3", "P4"],
+//     queueToCpu: false,
+//     cpuToQueue: false,
+//   },
+//   {
+//     time: 1,
+//     cpu: "P2",
+//     readyQueue: ["P3", "P4"],
+//     queueToCpu: true,
+//     cpuToQueue: false,
+//   },
+//   {
+//     time: 2,
+//     cpu: "P3",
+//     readyQueue: ["P4"],
+//     queueToCpu: true,
+//     cpuToQueue: false,
+//   },
+//   { time: 3, cpu: "", readyQueue: ["P4"], queueToCpu: false, cpuToQueue: true },
+//   { time: 4, cpu: "P4", readyQueue: [], queueToCpu: true, cpuToQueue: false },
+// ];
 
 let intervalId: number | undefined;
 let currentStep = 0;
 
 const startBtn = document.getElementById("startBtn") as HTMLButtonElement;
+const simContainer = document.querySelector(".sim-container") as HTMLElement;
 const stopBtn = document.querySelector(".stop-button") as HTMLButtonElement;
 const timeCounter = document.querySelector(".count") as HTMLElement;
 const arrow = document.querySelector(".arrow") as HTMLImageElement;
@@ -298,9 +307,10 @@ const readyQueueContainer = document.querySelector(
 const cpuContainer = document.querySelector(".cpu .process") as HTMLElement;
 
 function updateUI(state: simulationState) {
+  // Update visibility of simulation
+  simContainer.style.display = "flex";
   // Update Time
   timeCounter.textContent = state.time.toString();
-
   // Update Ready Queue
   readyQueueContainer.innerHTML = "";
   state.readyQueue.forEach((proc) => {
@@ -339,15 +349,15 @@ function startSimulation() {
   if (intervalId !== undefined) return; // Prevent multiple intervals
 
   currentStep = 0;
-  updateUI(simulationStates[currentStep]);
+  updateUI(simStates[currentStep]);
 
   intervalId = window.setInterval(() => {
     currentStep++;
-    if (currentStep >= simulationStates.length) {
+    if (currentStep >= simStates.length) {
       stopSimulation(); // Stop if finished
       return;
     }
-    updateUI(simulationStates[currentStep]);
+    updateUI(simStates[currentStep]);
   }, 1000); // Every second
 }
 
@@ -361,3 +371,91 @@ function stopSimulation() {
 // Event Listeners
 startBtn.addEventListener("click", startSimulation);
 stopBtn.addEventListener("click", stopSimulation);
+
+function generateSimulationStates(
+  segments: ExecutionSegment[]
+): simulationState[] {
+  const states: simulationState[] = [];
+  const readyQueue: string[] = [];
+  const arrivals: Map<number, Process[]> = new Map();
+  const processSegments: Map<number, ExecutionSegment[]> = new Map();
+
+  // Group process segments
+  for (const seg of segments) {
+    const arrival = seg.process.arrivalTime;
+    if (!arrivals.has(arrival)) arrivals.set(arrival, []);
+    arrivals.get(arrival)!.push(seg.process);
+
+    const pid = seg.process.id;
+    if (!processSegments.has(pid)) processSegments.set(pid, []);
+    processSegments.get(pid)!.push(seg);
+  }
+
+  // Track segment index
+  let time = 0;
+  const endTime = Math.max(...segments.map((s) => s.end));
+  let currentSegmentIndex = 0;
+  let currentCpu: string = "";
+  let runningProcessEnd = -1;
+  let runningProcessId = -1;
+
+  while (time <= endTime) {
+    let queueToCpu = false;
+    let cpuToQueue = false;
+
+    // Add arriving processes to ready queue
+    if (arrivals.has(time)) {
+      for (const proc of arrivals.get(time)!) {
+        const pid = `P${proc.id}`;
+        if (!readyQueue.includes(pid)) {
+          readyQueue.push(pid);
+        }
+      }
+    }
+
+    // End of a running segment
+    if (runningProcessEnd === time) {
+      const segmentsForProc = processSegments.get(runningProcessId) || [];
+      const moreSegments = segmentsForProc.filter((s) => s.start > time);
+      if (moreSegments.length > 0) {
+        // Preemption happened
+        cpuToQueue = true;
+        readyQueue.push(`P${runningProcessId}`);
+      }
+
+      currentCpu = "";
+      runningProcessEnd = -1;
+      runningProcessId = -1;
+    }
+
+    // Start of a new segment
+    const seg = segments[currentSegmentIndex];
+    if (seg && seg.start === time) {
+      currentCpu = `P${seg.process.id}`;
+      runningProcessEnd = seg.end;
+      runningProcessId = seg.process.id;
+      queueToCpu = true;
+
+      // Remove from ready queue if present
+      const idx = readyQueue.indexOf(currentCpu);
+      if (idx !== -1) {
+        readyQueue.splice(idx, 1);
+      }
+
+      currentSegmentIndex++;
+    }
+
+    // Save state
+    states.push({
+      time,
+      cpu: currentCpu,
+      readyQueue: [...readyQueue],
+      queueToCpu,
+      cpuToQueue,
+    });
+
+    time++;
+  }
+
+  return states;
+}
