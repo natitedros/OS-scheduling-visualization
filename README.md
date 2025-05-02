@@ -1,5 +1,3 @@
-# OS-scheduling-visualization
-
 # 🧠 CPU Scheduling Algorithm Visualizer
 
 A simple and interactive web-based visualizer for popular **CPU scheduling algorithms**, built using **HTML, CSS, and TypeScript**.
