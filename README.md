@@ -16,7 +16,7 @@ Visualize how different scheduling strategies execute processes over time, compl
 
 ---
 
-## 📸 Demo
+## 📸 [Demo](https://natitedros.github.io/OS-scheduling-visualization/)
 
 ## 🚀 Getting Started
 
